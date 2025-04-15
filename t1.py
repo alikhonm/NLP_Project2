@@ -1,5 +1,10 @@
+# CSC 427: NLP
+# Project 2
+# Due Apr 22
+
+from collections import Counter
 import argparse
-import subprocess
+import re
 
 # Get the corpus file name as an argument from the command line
 parser = argparse.ArgumentParser(description="Enter your corpus file path")
@@ -8,44 +13,40 @@ args = parser.parse_args()
 
 filename = args.corpus_path
 
-# Run Ken Church's Unix for Poets on the corpus file
-try:
-    # Define the shell command
-    command = f"tr -sc 'A-Za-z' '\n' < {filename} | sort | uniq -c | sort -n -r > unigram_counts.txt"
+# Read the text file and normalize (make every word lowercase)
+with open(filename, 'r') as file:
+    text = file.read().lower()
 
-    # Run the command in shell
-    result = subprocess.run(command, shell=True, text=True, capture_output=True)
+# Tokenize using whitespace and punctuation
+tokens = re.findall(r'\b\w+\b', text)
 
-except Exception as e:
-    print(f"Error: {e}")
+# Create lists of unigrams and bigrams
+unigrams = tokens
+bigrams = list(zip(tokens[:-1], tokens[1:])) # Pair every word with its succeeding word
 
-# Open the unigram_counts.txt file and read line by line. 
-# Each line has the form: (count) (word). Example: 3133 the
-with open('unigram_counts.txt', 'r') as file:
-    total_num_words = 0
-    count_word_matrix = []
+# Get the unigram and bigram counts
+unigram_counts = Counter(unigrams)
+bigram_counts = Counter(bigrams)
 
-    for line in file:
-        # Strip any leading or trailing whitespace
-        line = line.strip()
+# Calculate the total number of tokens
+total_num_tokens = sum(unigram_counts.values())
 
-        # Split line into count and word based on whitespace
-        parts = line.split(maxsplit=1)
+# Calculate the unigram probs
+unigram_probs = {
+    unigram: count / total_num_tokens
+    for unigram, count in unigram_counts.items()
+}
 
-        # Account for weird cases when the word section is just whitespace
-        # For example, line 13283 is just: "1 "
-        if len(parts) == 1:
-            continue    # If the word is empty, just skip
-        else:
-            count, word = parts
-        
-        # Sum the total number of words in the unigram_counts.txt file
-        total_num_words = total_num_words + int(count)
+# Calculate the bigram probs
+bigram_probs = {
+    bigram: count / unigram_counts[bigram[0]]
+    for bigram, count in bigram_counts.items()
+}
 
-        # Add the count and word to matrix  /// FIXME: SHOULD PROBABLY BE DICTIONARY
-        count_word_matrix.append([count, word])
-    
-    print(f"Total # of words: {total_num_words}")
-    
-    prob = int(count_word_matrix[0][0]) / total_num_words
-    print(f"Unigram probability of 'the': {prob}")
+# Example outputs
+print("Unigram Probabilities (just the first 5):")
+for unigram, prob in list(unigram_probs.items())[:5]:
+    print(f"P({unigram}) = {prob}")
+print("\nBigram Probabilities (just the first 5):")
+for bigram, prob in list(bigram_probs.items())[:5]:
+    print(f"P({bigram[1]} | {bigram[0]}) = {prob}")
