@@ -1,4 +1,4 @@
 # NLP_Project2
 
-Challenges: 
+Challenges:  
     - What methods should be used for reading the file, pre-processing, and calculating the probs?
