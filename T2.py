@@ -7,9 +7,30 @@ import argparse
 import re
 import random
 
+def uni_bi_gram(unigrams, bigrams):
+    # Get the unigram and bigram counts
+    unigram_counts = Counter(unigrams)
+    bigram_counts = Counter(bigrams)
+
+    # Calculate the total number of tokens
+    total_num_tokens = sum(unigram_counts.values())
+
+    # Calculate the unigram probs
+    unigram_probs = {
+        unigram: count / total_num_tokens
+        for unigram, count in unigram_counts.items()
+    }
+
+    # Calculate the bigram probs
+    bigram_probs = {
+        bigram: count / unigram_counts[bigram[0]]
+        for bigram, count in bigram_counts.items()
+    }
+    
+    return unigram_probs,bigram_probs
+
 
 def generate_sentence(bigram_model):
-    
     # A variable that control the number of words in the generated sentence  
     sentence_length = 15
     # Get the random first word 
@@ -33,7 +54,14 @@ def generate_sentence(bigram_model):
     
     return sentence
 
-
+def print_grams(unigram_probs,bigram_probs):
+    print("\nUnigram Probabilities (just the first 5):")
+    for unigram, prob in list(unigram_probs.items())[:5]:
+        print(f"P({unigram}) = {prob}")
+    print("\nBigram Probabilities (just the first 5):")
+    for bigram, prob in list(bigram_probs.items())[:5]:
+        print(f"P({bigram[1]} | {bigram[0]}) = {prob}")
+    
 # Get the corpus file name as an argument from the command line
 parser = argparse.ArgumentParser(description="Enter your corpus file path")
 parser.add_argument("corpus_path", help="File path of your corpus.")
@@ -52,41 +80,18 @@ tokens = re.findall(r'\b\w+\b', text)
 unigrams = tokens
 bigrams = list(zip(tokens[:-1], tokens[1:])) # Pair every word with its succeeding word
 
-# Get the unigram and bigram counts
-unigram_counts = Counter(unigrams)
-bigram_counts = Counter(bigrams)
+unigram_probs, bigram_probs = uni_bi_gram(unigrams,bigrams)
 
-# Calculate the total number of tokens
-total_num_tokens = sum(unigram_counts.values())
-
-# Calculate the unigram probs
-unigram_probs = {
-    unigram: count / total_num_tokens
-    for unigram, count in unigram_counts.items()
-}
-
-# Calculate the bigram probs
-bigram_probs = {
-    bigram: count / unigram_counts[bigram[0]]
-    for bigram, count in bigram_counts.items()
-}
-
-# Example outputs
-print("\nUnigram Probabilities (just the first 5):")
-for unigram, prob in list(unigram_probs.items())[:5]:
-    print(f"P({unigram}) = {prob}")
-print("\nBigram Probabilities (just the first 5):")
-for bigram, prob in list(bigram_probs.items())[:5]:
-    print(f"P({bigram[1]} | {bigram[0]}) = {prob}")
+print_grams(unigram_probs, bigram_probs)
 
 # Getting a user input for optional actions
 userInput = 1
 while (userInput != 4):
-    val = input("\nIf you want you can: \n1: Look at the unigram and bigram probabilities again\n2: Generate a Sentence. \n3: Do Add-1 Smoothing. \n4: Compute the perplexity of a test set \n5: Quit\n")
+    userInput = input("\nIf you want you can: \n1: Look at the unigram and bigram probabilities again\n2: Generate a Sentence. \n3: Do Add-1 Smoothing. \n4: Compute the perplexity of a test set \n5: Quit\n")
     
     # If not an integer ask for input again
     try:
-        choice = int(val)
+        choice = int(userInput)
     except ValueError:
         print("\nPleace enter a number!")
         continue
@@ -97,15 +102,10 @@ while (userInput != 4):
 
     # If the input is 1, print the unigram and bigram probabilities again
     if (choice == 1):
-        print("\nUnigram Probabilities (just the first 5):")
-        for unigram, prob in list(unigram_probs.items())[:5]:
-            print(f"P({unigram}) = {prob}")
-        print("\nBigram Probabilities (just the first 5):")
-        for bigram, prob in list(bigram_probs.items())[:5]:
-            print(f"P({bigram[1]} | {bigram[0]}) = {prob}")
+        print_grams(unigram_probs, bigram_probs)
 
     # If the input is 2, probabilistically generate a sentence
-    if (choice == 2):
+    elif (choice == 2):
         sentence = generate_sentence(bigram_probs)
         print("\n" + sentence)
 
@@ -113,5 +113,5 @@ while (userInput != 4):
 
     #If the input is 5, terminate the current session
     elif (choice == 5):
-        print("Have a good day!")
+        print("\nHave a good day!\n")
         exit()
