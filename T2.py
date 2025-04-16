@@ -85,8 +85,8 @@ unigram_probs, bigram_probs = uni_bi_gram(unigrams,bigrams)
 print_grams(unigram_probs, bigram_probs)
 
 # Getting a user input for optional actions
-userInput = 1
-while (userInput != 4):
+userInput = True
+while (userInput):
     userInput = input("\nIf you want you can: \n1: Look at the unigram and bigram probabilities again\n2: Generate a Sentence. \n3: Do Add-1 Smoothing. \n4: Compute the perplexity of a test set \n5: Quit\n")
     
     # If not an integer ask for input again
