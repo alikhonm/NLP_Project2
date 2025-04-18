@@ -20,7 +20,7 @@ def word_tokenizer(text):
     word = ""           # Temporary holder to build words
 
     for char in text:           # Iterate over each character in the text
-        if char.isalnum() or char == '_':           # Check if the word is an alphanumerical or an underscore
+        if char.isalnum() or char == '_' or char =='\'': # Check if the word is alphanumerical, underscore, or '
             word += char                            # Append the character to the current word
         else:  
             if word:                                # If a non-word character is encountered and the word is non emptry
@@ -77,10 +77,15 @@ def add_one_smoothing(unigram_counts, bigram_counts):
 
     # Smoothed bigram probabilities: (C(w1, w2) + 1) / (C(w1) + V)
     sm_bigrams = {}
-    for w1 in vocab:
-        denom = unigram_counts[w1] + V  # Denominator for bigram smoothing (count of unigram in the text + size of the vocabulary)
-        for w2 in vocab:
-            sm_bigrams[(w1, w2)] = (bigram_counts.get((w1, w2), 0) + 1) / denom
+    # for w1 in vocab:
+    #     denom = unigram_counts[w1] + V  # Denominator for bigram smoothing (count of unigram in the text + size of the vocabulary)
+    #     for w2 in vocab:
+    #         sm_bigrams[(w1, w2)] = (bigram_counts.get((w1, w2), 0) + 1) / denom
+
+    # Iterate over all the bigrams instead of all |V| * |V| words to save memory
+    for (w1, w2), count in bigram_counts.items():   
+        denom = unigram_counts[w1] + V
+        sm_bigrams[(w1, w2)] = (count + 1) / denom
     
     return sm_unigrams, sm_bigrams
 
