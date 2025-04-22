@@ -14,17 +14,19 @@ Features:
 Requirements:
 ●	Python 3.10 or newer
 ●	No external dependencies (uses only standard library modules):
-○	argparse for command-line argument parsing
-○	collections for efficient counting
-○	random for sampling operations
-○	math for logarithmic calculations
+  ○	argparse for command-line argument parsing
+  ○	collections for efficient counting
+  ○	random for sampling operations
+  ○	math for logarithmic calculations
 
 File Structure:
 project2/
-├── README.txt       # This documentation file
-├── D1.py    		 # Base script for corpus analysis and NLP tasks
-├── D2.pdf        	 # A written report with an analysis of the program
-└── D3.pdf          	 # Responses to the questions
+├── README.txt                     # This documentation file
+├── D1.py    		                   # Base script for corpus analysis and NLP tasks
+├── D2.pdf        	               # A written report with an analysis of the program
+├── TheStory.txt                   # First corpus that was used
+├── AlcoholoUseConference.txt      # Second corpus that was used
+└── D3.pdf                         # Responses to the questions
 
 Installation:
 Simply download the files and ensure Python 3.10+ is installed on your system.
@@ -32,7 +34,7 @@ Simply download the files and ensure Python 3.10+ is installed on your system.
 Usage Instructions:
 
 Basic Command Syntax:
-python3 T1.py {corpus_path}
+python3 T1.py corpus_path
 Where corpus_path is the path to your text corpus file (e.g., TheStory.txt).
 
 Interactive Options:
