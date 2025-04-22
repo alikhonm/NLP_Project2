@@ -21,12 +21,12 @@ Requirements:
 
 File Structure:
 project2/
-├── README.txt                     # This documentation file
-├── D1.py    		                   # Base script for corpus analysis and NLP tasks
-├── D2.pdf        	               # A written report with an analysis of the program
-├── TheStory.txt                   # First corpus that was used
+├── README.txt                # This documentation file
+├── D1.py    		              # Base script for corpus analysis and NLP tasks
+├── D2.pdf        	          # A written report with an analysis of the program
+├── TheStory.txt              # First corpus that was used
 ├── AlcoholoUseConference.txt      # Second corpus that was used
-└── D3.pdf                         # Responses to the questions
+└── D3.pdf                    # Responses to the questions
 
 Installation:
 Simply download the files and ensure Python 3.10+ is installed on your system.
