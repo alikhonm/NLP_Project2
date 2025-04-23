@@ -243,8 +243,12 @@ def main():
         # Computes perplexity 
         elif choice == '4':
             test_file_path = input("Enter the test file path: ")
-            with open(test_file_path, 'r') as test_file:
-                test_text = test_file.read().lower()
+            try:    
+                with open(test_file_path, 'r') as test_file:
+                    test_text = test_file.read().lower()
+            except FileNotFoundError:
+                print("Error: File not found. Please check the path and try again.")
+                continue
             test_tokens = word_tokenizer(test_text)
             
             # Ensure the test tokens are sufficient for perplexity calculation
